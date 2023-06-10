@@ -24,9 +24,13 @@ const PlayersForm = () => {
   }, [namePlayerOne, namePlayerTwo]);
 
 	const handleClick  = ({ target }) =>{
-		startGame();
-		navigate("/game");
-	}
+		if (namePlayerOne === namePlayerTwo){
+			alert("Names must be different!");
+		}else{
+			startGame();
+			navigate("/game");
+		}
+	};
 
 	return (
 		<div>
