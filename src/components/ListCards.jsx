@@ -1,6 +1,6 @@
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-
+import { v4 as uuidv4 } from 'uuid';
 
 const ListCards = ({ namePlayer, cards }) => {
   return (
@@ -10,7 +10,7 @@ const ListCards = ({ namePlayer, cards }) => {
       </Typography>
       <Box sx={{ display: 'flex', p: 1.5 }}>
         {cards.map((card) => (
-          <Box sx={{ marginRight: '10px' }}>
+          <Box key={uuidv4()} sx={{ marginRight: '10px' }}>
             <img src={card?.image} alt={card?.image} style={{ width: '100%', height: 'auto' }} />
           </Box>
         ))}

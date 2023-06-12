@@ -74,6 +74,7 @@ const GameProvider = ({ children }) => {
     let [ternas, ternasGroups] = groupsValidator(cardsMap,3); // Ternas Quantity
     let [pairs, pairsGroups] = groupsValidator(cardsMap,2); // Pairs Quantity
     let [individual, individualGroups] = groupsValidator(cardsMap,1); // Individual Quantity
+    let straight = findStraight(cards);
     analyzer(cards, newCard, quarters, ternas, individual, pairsGroups, individualGroups, playerName);
     if(ternas == 2 && quarters == 1){
       setPlayerWin(playerName) 
@@ -95,18 +96,25 @@ const GameProvider = ({ children }) => {
     return [groupsNumber, groupValue];
   };
 
-  const staircase = ( ) => {
-    
+  const findStraight = (deck) => {
+    const sortedDeck = [...deck].sort((a, b) => a.value - b.value);
+    const length = sortedDeck.length;
+    let straight = [];
+
+    for (let i = 0; i < length - 1; i++) {
+      if (sortedDeck[i + 1].value - sortedDeck[i].value === 1) {
+        straight.push(sortedDeck[i]);
+      } else {
+        straight = [];
+      }
+    }
+    straight.push(sortedDeck[length - 1]);
+    return straight.length >= 3 ? straight : [];
   };
 
   const analyzer = (playerCards, newCard, quarters, ternas, individual,  pairsGroups, individualGroups, playerName) => {
-    console.log('############################################################  ->>', playerName);
     let groupType;
     const sameValue = playerCards.filter((mapCard) => mapCard.value === newCard.value && mapCard.suit !== newCard.suit);
-    console.log('*********************', newCard);
-    console.log('*********************', sameValue);
-    console.log('.....................', sameValue.length);
-    console.log('===============', quarters, ternas, individual, individualGroups)
     switch (sameValue.length){
       case 3:
         if(quarters < 2) groupType = 'Quarter'; break;
@@ -116,7 +124,6 @@ const GameProvider = ({ children }) => {
         const individualsValue = individualGroups.filter((discardCard) => newCard.value != discardCard);
         if(individualsValue.length !== 0) groupType = 'Pair'; break;
     };
-    console.log('---------------------', groupType);
     if(groupType){
       let discardGroup = individualGroups.filter((discardCard) => newCard.value != discardCard);
       if((groupType == 'Terna' || groupType == 'Quarter') && discardGroup.length == 0 ){
@@ -135,15 +142,9 @@ const GameProvider = ({ children }) => {
         return 0; // a y b son iguales
       });
       playerName == namePlayerOne ? setCardsPlayerOne(playerCards) : setCardsPlayerTwo(playerCards);
-      console.log('###################', playerCards);
-      console.log('iiiiiiiiiiiiiiiiiii', indexCardToDiscard);
-      console.log('jjjjjjjjjjjjjjjjjjj', discardGroup[0]);
-      console.log('lllllllllllllllllll', discardGroup);
     }else{
-      console.log("No sirve"); 
       playerCards.pop();
       playerName == namePlayerOne ? setCardsPlayerOne(playerCards) : setCardsPlayerTwo(playerCards);
-      console.log('-----------', playerCards);
     };
   };
 
